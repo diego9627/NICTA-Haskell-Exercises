@@ -33,7 +33,7 @@ instance Comonad Id where
     Id a
     -> a
   copure =
-    error "todo"
+    runId
 
 -- | Witness that all things with (<<=) and copure also have (<$>).
 --
@@ -44,5 +44,5 @@ instance Comonad Id where
   (a -> b)
   -> f a
   -> f b
-(<$>) =
-  error "todo"
+(<$>) f a = (f . copure <<= a)
+  

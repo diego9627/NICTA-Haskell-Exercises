@@ -15,7 +15,7 @@ import Course.Applicative
 import Course.Bind
 import Course.Monad
 import qualified Data.Set as S
-
+import qualified Data.Char as DC
 -- $setup
 -- >>> import Test.QuickCheck.Function
 -- >>> import Data.List(nub)
@@ -41,8 +41,8 @@ instance Functor (State s) where
     (a -> b)
     -> State s a
     -> State s b
-  (<$>) =
-      error "todo"
+  f <$> a = 
+     State (\s -> let (v,t) = runState a s in (f v,t))-- (\s -> a  )
 
 -- | Implement the `Apply` instance for `State s`.
 -- >>> runState (pure (+1) <*> pure 0) 0
@@ -56,8 +56,10 @@ instance Apply (State s) where
     State s (a -> b)
     -> State s a
     -> State s b 
-  (<*>) =
-    error "todo"
+  f <*> a =
+    State $ \s -> let (fv,t) = runState f s 
+                      (av,q) = runState a t 
+                  in (fv av,q) 
 
 -- | Implement the `Applicative` instance for `State s`.
 -- >>> runState (pure 2) 0
@@ -66,8 +68,8 @@ instance Applicative (State s) where
   pure ::
     a
     -> State s a
-  pure =
-    error "todo"
+  pure a =
+    State $ \s -> (a,s)
 
 -- | Implement the `Bind` instance for `State s`.
 -- >>> runState ((const $ put 2) =<< put 1) 0
@@ -77,8 +79,9 @@ instance Bind (State s) where
     (a -> State s b)
     -> State s a
     -> State s b
-  (=<<) =
-    error "todo"
+  f =<< a =
+    State $ \s -> let (va,t) = runState a s
+                  in runState (f va) t
 
 instance Monad (State s) where
 
@@ -89,8 +92,8 @@ exec ::
   State s a
   -> s
   -> s
-exec =
-  error "todo"
+exec (State k) = snd . k
+  
 
 -- | Run the `State` seeded with `s` and retrieve the resulting value.
 --
@@ -99,8 +102,7 @@ eval ::
   State s a
   -> s
   -> a
-eval =
-  error "todo"
+eval (State k) = fst . k
 
 -- | A `State` where the state also distributes into the produced value.
 --
@@ -109,7 +111,7 @@ eval =
 get ::
   State s s
 get =
-  error "todo"
+  State $ join (,)
 
 -- | A `State` where the resulting state is seeded with the given value.
 --
@@ -119,7 +121,7 @@ put ::
   s
   -> State s ()
 put =
-  error "todo"
+  State . const . (,) ()
 
 -- | Find the first element in a `List` that satisfies a given predicate.
 -- It is possible that no element is found, hence an `Optional` result.
@@ -140,8 +142,8 @@ findM ::
   (a -> f Bool)
   -> List a
   -> f (Optional a)
-findM =
-  error "todo"
+findM fp =
+  foldRight (\a acc -> fp a >>= \bl -> if bl then return (Full a) else acc) (pure Empty)
 
 -- | Find the first element in a `List` that repeats.
 -- It is possible that no element repeats, hence an `Optional` result.
@@ -154,8 +156,14 @@ firstRepeat ::
   Ord a =>
   List a
   -> Optional a
-firstRepeat =
-  error "todo"
+--firstRepeat = flip eval S.empty . findM (\a -> State $ \s ->
+--  case S.lookupIndex a s of
+--    P.Nothing -> (False,S.insert a s)
+--    _         -> (True,s)
+--  )
+firstRepeat = listWithState findM S.member
+  
+-- State s a 
 
 -- | Remove all duplicate elements in a `List`.
 -- /Tip:/ Use `filtering` and `State` with a @Data.Set#Set@.
@@ -167,8 +175,14 @@ distinct ::
   Ord a =>
   List a
   -> List a
-distinct =
-  error "todo"
+--distinct = flip eval S.empty . filtering (\a -> State $ \s ->
+--  case S.lookupIndex a s of
+--    P.Nothing -> (True, S.insert a s)
+--    _         -> (False,           s)
+--  )
+distinct = listWithState filtering S.notMember
+
+  
 
 -- | A happy number is a positive integer, where the sum of the square of its digits eventually reaches 1 after repetition.
 -- In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
@@ -194,5 +208,29 @@ distinct =
 isHappy ::
   Integer
   -> Bool
-isHappy =
-  error "todo"
+--isHappy = contains 1 .  flip eval S.empty . findM (\a -> State $ \s -> 
+--    case S.lookupIndex a s of
+--      P.Nothing -> (False, S.insert a s)
+--      _         -> (True ,            s)
+--  ) . produce (foldRight (+) 0. map (toInteger . (join (*)) . DC.digitToInt) . show') 
+isHappy = contains 1 . firstRepeat . produce (toInteger .sum . map ((join (*)) . DC.digitToInt) . show')
+
+
+--listWithState ::
+--  ((a -> f Bool) -> List a -> f (h a)) ->
+--  (a -> S.Set a -> Bool) ->
+--  List a ->
+--  h a
+listWithState :: 
+  Ord a1 =>
+  ((a1 -> State (S.Set a1) a2) 
+  -> t 
+  -> State (S.Set a3) a)
+  -> (a1 -> S.Set a1 -> a2) 
+  -> t 
+  -> a  
+listWithState op tst = flip eval S.empty . op (\a -> State $ \s -> (tst a s, S.insert a s))
+
+
+
+
