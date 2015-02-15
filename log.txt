@@ -1,88 +1,10 @@
 Preprocessing test suite 'doctests' for course-0.1.2...
 Running 1 test suites...
 Test suite doctests: RUNNING...
-### Failure in src/Course/JsonParser.hs:88: expression `parse jsonString "\" abc\""'
-expected: Result >< " abc"
- but got: *** Exception: todo
-### Failure in src/Course/JsonParser.hs:120: expression `parse jsonNumber "234"'
-expected: Result >< 234 % 1
- but got: *** Exception: todo
-### Failure in src/Course/JsonParser.hs:149: expression `parse jsonTrue "true"'
-expected: Result >< "true"
- but got: *** Exception: todo
-### Failure in src/Course/JsonParser.hs:163: expression `parse jsonFalse "false"'
-expected: Result >< "false"
- but got: *** Exception: todo
-### Failure in src/Course/JsonParser.hs:177: expression `parse jsonNull "null"'
-expected: Result >< "null"
- but got: *** Exception: todo
-### Failure in src/Course/JsonParser.hs:191: expression `parse jsonArray "[]"'
-expected: Result >< []
- but got: *** Exception: todo
-### Failure in src/Course/JsonParser.hs:214: expression `parse jsonObject "{}"'
-expected: Result >< []
- but got: *** Exception: todo
-### Failure in src/Course/JsonParser.hs:234: expression `parse jsonValue "true"'
-expected: Result >< JsonTrue
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:35: expression `parse spaces " abc"'
-expected: Result >abc< " "
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:50: expression `parse (tok (is 'a')) "a bc"'
-expected: Result >bc< 'a'
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:82: expression `parse quote "'abc"'
-expected: Result >abc< '\''
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:99: expression `parse (string "abc") "abcdef"'
-expected: Result >def< "abc"
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:114: expression `parse (stringTok "abc") "abc  "'
-expected: Result >< "abc"
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:129: expression `parse (option 'x' character) "abc"'
-expected: Result >bc< 'a'
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:145: expression `parse digits1 "123"'
-expected: Result >< "123"
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:159: expression `parse (oneof "abc") "bcdef"'
-expected: Result >cdef< 'b'
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:174: expression `parse (noneof "bcd") "abc"'
-expected: Result >bc< 'a'
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:190: expression `parse (between (is '[') (is ']') character) "[a]"'
-expected: Result >< 'a'
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:236: expression `parse hex "0010"'
-expected: Result >< '\DLE'
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:256: expression `parse hexu "u0010"'
-expected: Result >< '\DLE'
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:280: expression `parse (sepby1 character (is ',')) "a"'
-expected: Result >< "a"
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:303: expression `parse (sepby character (is ',')) ""'
-expected: Result >< ""
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:323: expression `parse eof ""'
-expected: Result >< ()
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:337: expression `parse (satisfyAll (isUpper :. (/= 'X') :. Nil)) "ABC"'
-expected: Result >BC< 'A'
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:361: expression `parse (satisfyAny (isLower :. (/= 'X') :. Nil)) "abc"'
-expected: Result >bc< 'a'
- but got: *** Exception: todo
-### Failure in src/Course/MoreParser.hs:382: expression `parse (betweenSepbyComma '[' ']' lower) "[a]"'
-expected: Result >< "a"
- but got: *** Exception: todo
 ### Failure in src/Course/Cheque.hs:252: expression `dollars "0"'
 expected: "zero dollars and zero cents"
  but got: "*** Exception: todo
-Examples: 533  Tried: 446  Errors: 0  Failures: 27
+Examples: 533  Tried: 510  Errors: 0  Failures: 1
 Test suite doctests: FAIL
 Test suite logged to: dist/test/course-0.1.2-doctests.log
 0 of 1 test suites (0 of 1 test cases) passed.
