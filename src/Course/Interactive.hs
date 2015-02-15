@@ -83,8 +83,7 @@ data Op =
 -- /Tip:/ @putStrLn :: String -> IO ()@ -- Prints a string and then a new line to standard output.
 convertInteractive ::
   IO ()
-convertInteractive =
-  error "todo"
+convertInteractive = vooid (untilM (\ln -> pure $ ln == "quit" ) (putStrLn "Write a line:" >- getLine >>= \ln -> putStrLn (map toUpper ln) >- pure ln ))
 
 -- |
 --
@@ -111,8 +110,10 @@ convertInteractive =
 -- /Tip:/ @putStrLn :: String -> IO ()@ -- Prints a string and then a new line to standard output.
 reverseInteractive ::
   IO ()
-reverseInteractive =
-  error "todo"
+reverseInteractive = vooid (untilM (const $ pure False) reverseOnce)
+  where reverseOnce = (putStrLn "Write a filename to reverse." >- getLine >>= \flToRead ->    putStrLn "Where should I write it?" >-    getLine >>= \flToWrite ->    readFile flToRead >>= \str ->    writeFile flToWrite (reverse str) >-    putStrLn "Done." >-    return flToRead)
+
+  
 
 -- |
 --
@@ -137,8 +138,12 @@ reverseInteractive =
 -- /Tip:/ @putStrLn :: String -> IO ()@ -- Prints a string and then a new line to standard output.
 encodeInteractive ::
   IO ()
-encodeInteractive =
-  error "todo"
+encodeInteractive   = (vooid (untilM (const $ pure False) encodeOnce))
+  where encodeOnce  = (putStrLn "Give me an URL" >- getLine >>= \str -> let enc = (flatMap encode str) in putStrLn enc >- return enc )
+        encode ' '  = "%20"
+	encode '\t' = "%09"
+	encode '\"' = "%22"
+	encode x    = (x :. Nil)
 
 interactive ::
   IO ()

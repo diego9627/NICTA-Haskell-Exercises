@@ -14,8 +14,16 @@ fastAnagrams ::
   Chars
   -> Filename
   -> IO (List Chars)
-fastAnagrams =
-  error "todo"
+fastAnagrams cs fn = (fastAnagramsPure cs) <$> lines <$> (readFile fn)
+
+fastAnagramsPure ::
+  Chars
+  -> List Chars
+  -> List Chars
+fastAnagramsPure cs dic = (listh . S.toList . S.intersection perms) dicset
+  where 
+    dicset = (S.fromList . hlist) dic
+    perms  = (S.fromList . hlist) (permutations cs)
 
 newtype NoCaseString =
   NoCaseString {
